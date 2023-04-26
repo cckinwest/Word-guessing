@@ -2,8 +2,9 @@ var gameCard = document.querySelector("#gameCard");
 var timer = document.querySelector("#timer");
 var hint = document.querySelector("#hint");
 var attempt = document.querySelector("#attempt");
+var redirect = document.querySelector("#redirect");
 
-var timeLeft = 30;
+var timeLeft = 15;
 var endOfGame = false;
 var index = 0;
 var success = false;
@@ -23,8 +24,6 @@ const myTimer = setInterval(() => {
 }, 1000);
 
 function renderQuiz() {
-  attempt.focus();
-
   var word = wordMeaning.word;
   var meaning = wordMeaning.meaning;
 
@@ -60,8 +59,11 @@ function handleKeyDown(event) {
 function gameOver() {
   document.removeEventListener("keydown", handleKeyDown);
   attempt.disabled = true;
+  attempt.setAttribute("style", "display: none;");
+
   clearInterval(myTimer);
   clearInterval(myGameLoop);
+  clearInterval(manageAttempt);
 
   if (success) {
     hint.textContent = "You get it!";
@@ -76,11 +78,25 @@ function gameOver() {
       }
     }
   }
+
+  redirect.setAttribute("style", "display: block;");
 }
 
-document.addEventListener("keydown", handleKeyDown);
+redirect.addEventListener("click", () => {
+  location.href = "index.html";
+});
+redirect.setAttribute("style", "display: none;");
 
 renderQuiz();
+document.addEventListener("keydown", handleKeyDown);
+
+const manageAttempt = setInterval(() => {
+  if (!endOfGame) {
+    attempt.focus();
+  } else {
+    attempt.blur();
+  }
+}, 100);
 
 const myGameLoop = setInterval(() => {
   if (success) {

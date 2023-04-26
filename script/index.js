@@ -71,6 +71,8 @@ function gererateWordMeaning() {
         meaning = meaningStr.split("(nou) ").slice(0, -1)[1];
       } else if (meaningStr.split("(vrb) ").slice(0, -1)[1]) {
         meaning = meaningStr.split("(vrb) ").slice(0, -1)[1];
+      } else if (meaningStr.split("(adj) ").slice(0, -1)[1]) {
+        meaning = meaningStr.split("(adj) ").slice(0, -1)[1];
       }
 
       const wordMeaning = {
