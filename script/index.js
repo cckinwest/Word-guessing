@@ -62,8 +62,16 @@ function gererateWordMeaning() {
   }, 200);
 
   generateRandomWord().then((word) => {
-    getDefinition(word).then((meaning) => {
+    getDefinition(word).then((meaningStr) => {
       clearInterval(myloading);
+
+      var meaning = meaningStr;
+
+      if (meaningStr.split("(nou) ").slice(0, -1)[1]) {
+        meaning = meaningStr.split("(nou) ").slice(0, -1)[1];
+      } else if (meaningStr.split("(vrb) ").slice(0, -1)[1]) {
+        meaning = meaningStr.split("(vrb) ").slice(0, -1)[1];
+      }
 
       const wordMeaning = {
         word: word,
