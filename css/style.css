@@ -1,0 +1,29 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCard {
+    display: block;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #ffa500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameCard > * {
+    font-size: 40px;
+    padding: 5px;
+}
+
+#hint {
+    font-size: 16px;
+    font-family:'Courier New', Courier, monospace;
+}
