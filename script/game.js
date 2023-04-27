@@ -4,10 +4,12 @@ var hint = document.querySelector("#hint");
 var attempt = document.querySelector("#attempt");
 var redirect = document.querySelector("#redirect");
 
-var timeLeft = 15;
+var timeLeft = 30;
 var endOfGame = false;
 var index = 0;
 var success = false;
+
+var key = "";
 
 const wordMeaning = JSON.parse(localStorage.getItem("wordMeaning"));
 
@@ -22,6 +24,42 @@ const myTimer = setInterval(() => {
     gameOver();
   }
 }, 1000);
+
+function createKeyboard() {
+  const keyButtonsAlpha = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+  var keyboard = document.querySelector("#keyboard");
+  var row0 = document.querySelector("#row0");
+  var row1 = document.querySelector("#row1");
+  var row2 = document.querySelector("#row2");
+
+  keyboard.setAttribute(
+    "style",
+    "display: flex; flex-direction: column; justify-content: center; align-items: center;"
+  );
+  row0.setAttribute("style", "display: flex;");
+  row1.setAttribute("style", "display: flex;");
+  row2.setAttribute("style", "display: flex;");
+
+  for (var i = 0; i < keyButtonsAlpha.length; i++) {
+    var keyButton = document.createElement("button");
+    keyButton.textContent = keyButtonsAlpha[i];
+    keyButton.setAttribute("class", "keyButton");
+    keyButton.setAttribute("id", `key${keyButtonsAlpha[i]}`);
+    keyButton.setAttribute("data-alpha", keyButtonsAlpha[i]);
+
+    keyButton.addEventListener("click", (event) => {
+      key = event.target.dataset.alpha;
+    });
+
+    if (i < 10) {
+      row0.appendChild(keyButton);
+    } else if (i < 19) {
+      row1.appendChild(keyButton);
+    } else {
+      row2.appendChild(keyButton);
+    }
+  }
+}
 
 function renderQuiz() {
   var word = wordMeaning.word;
@@ -42,28 +80,15 @@ function renderQuiz() {
 }
 
 function handleKeyDown(event) {
-  var key = event.key.toUpperCase();
-  var letters = document.querySelectorAll(".letter");
+  var keyPressed = event.key.toUpperCase();
+  var keyButton = document.querySelector(`#key${keyPressed}`);
 
-  attempt.value = "";
-
-  for (var i = 0; i < letters.length; i++) {
-    var alpha = letters[i].dataset.alpha;
-    if (key === alpha) {
-      letters[i].textContent = alpha;
-      letters[i].setAttribute("data-state", "shown");
-    }
-  }
+  keyButton.click();
 }
 
 function gameOver() {
-  document.removeEventListener("keydown", handleKeyDown);
-  attempt.disabled = true;
-  attempt.setAttribute("style", "display: none;");
-
   clearInterval(myTimer);
   clearInterval(myGameLoop);
-  clearInterval(manageAttempt);
 
   if (success) {
     hint.textContent = "You get it!";
@@ -85,18 +110,12 @@ function gameOver() {
 redirect.addEventListener("click", () => {
   location.href = "index.html";
 });
+
 redirect.setAttribute("style", "display: none;");
 
+createKeyboard();
 renderQuiz();
 document.addEventListener("keydown", handleKeyDown);
-
-const manageAttempt = setInterval(() => {
-  if (!endOfGame) {
-    attempt.focus();
-  } else {
-    attempt.blur();
-  }
-}, 100);
 
 const myGameLoop = setInterval(() => {
   if (success) {
@@ -105,6 +124,15 @@ const myGameLoop = setInterval(() => {
 
   if (!endOfGame) {
     var letters = document.querySelectorAll(".letter");
+
+    for (var i = 0; i < letters.length; i++) {
+      var alpha = letters[i].dataset.alpha;
+      if (key === alpha) {
+        letters[i].textContent = alpha;
+        letters[i].setAttribute("data-state", "shown");
+      }
+    }
+
     var count = 0;
 
     for (var i = 0; i < letters.length; i++) {
@@ -119,4 +147,4 @@ const myGameLoop = setInterval(() => {
   } else {
     gameOver();
   }
-}, 200);
+}, 100);
